@@ -10,7 +10,7 @@ namespace DataAccess.Concrete.InMemory
 {
 	
 
-	public class InMemoryProductDal : IProductDal
+	public class InMemoryProductDal:IProductDal
 	{
 		List<Product> _products;
 		public InMemoryProductDal()
@@ -52,7 +52,7 @@ namespace DataAccess.Concrete.InMemory
 
 		public List<Product> GetAll(Expression<Func<Product, bool>> filter = null)
 		{
-				throw new NotImplementedException();
+			throw new NotImplementedException();
 		}
 
 		public List<Product> GetAllByCategory(int categoryId)
