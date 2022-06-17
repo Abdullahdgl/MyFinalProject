@@ -25,7 +25,7 @@ namespace Business.Concrete
 
 		}
 
-		public List<Category> GetById(int categoryId)
+		public Category GetById(int categoryId)
 		{
 
 			return _categoryDal.Get(c => c.CategoryId == categoryId);
