@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using DataAccess.Abstract;
+using Core.Utilities.Results;
+using Business.Constants;
 
 namespace Business.Concrete
 {
@@ -17,18 +19,25 @@ namespace Business.Concrete
 			_categoryDal = categoryDal;
 		}
 
-		public List<Category> GetAll()
+		public IDataResult<List<Category>> GetAll()
 		{
 			//İş kodları
-			return _categoryDal.GetAll();
+			if (DateTime.Now.Hour==10)
+			{
+
+				return new ErrorDataResult<List<Category>>(Messages.MainTenanceTime);
+			}
+
+			return new SuccessDataResult<List<Category>>(_categoryDal.GetAll(), Messages.ProductListed);
+
 
 
 		}
 
-		public Category GetById(int categoryId)
+		public IDataResult<Category> GetById(int categoryId)
 		{
 
-			return _categoryDal.Get(c => c.CategoryId == categoryId);
+			return new SuccessDataResult<Category> ( _categoryDal.Get(c => c.CategoryId == categoryId));
 		}
 	}
 }
