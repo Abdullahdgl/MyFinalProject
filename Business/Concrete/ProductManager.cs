@@ -22,18 +22,17 @@ namespace Business.Concrete
 
 		public IResult Add(Product product)
 		{
-			if (product.ProductName.Length<2)
-			{
-				return new ErrorResult(Messages.ProductNameInvalid);
-			}
+			//business codes
+			//validation
+			
 			_productDal.Add(product);
 			return new SuccessResult(Messages.ProductAdded);
 
 		}
-
+		 
 		public IDataResult<List<Product>> GetALL()
 		{
-			if (DateTime.Now.Hour==22)
+			if (DateTime.Now.Hour == 23)
 			{
 				return new ErrorDataResult<List<Product>>(Messages.MainTenanceTime);
 			}
@@ -44,7 +43,7 @@ namespace Business.Concrete
 
 		public IDataResult<List<Product>> GetAllByCategoryId(int id)
 		{
-			return new SuccessDataResult<List<Product>>(_productDal.GetAll(p=>p.CategoryId ==id));
+			 return new SuccessDataResult<List<Product>>(_productDal.GetAll(p=>p.CategoryId ==id));
 		}
 
 		public IDataResult<Product> GetById(int productId)
