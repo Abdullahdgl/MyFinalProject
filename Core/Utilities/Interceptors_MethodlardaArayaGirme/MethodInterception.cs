@@ -5,13 +5,15 @@ namespace Core.Utilities.Interceptors
 {
 	public abstract class MethodInterception : MethodInterceptionBaseAttribute
     {
+        //Invocation : business method - Ornek Is Tarafındaki Add Methodumuz.
+
         protected virtual void OnBefore(IInvocation invocation) { }
         protected virtual void OnAfter(IInvocation invocation) { }
         protected virtual void OnException(IInvocation invocation, System.Exception e) { }
         protected virtual void OnSuccess(IInvocation invocation) { }
         public override void Intercept(IInvocation invocation)
         {
-            var isSuccess = true;
+            var isSuccess = true; 
             OnBefore(invocation);
             try
             {
