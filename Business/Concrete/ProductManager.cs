@@ -4,6 +4,7 @@ using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -20,11 +21,14 @@ namespace Business.Concrete
 	public class ProductManager : IProductService
 	{
 		IProductDal _productDal;
+		ICategoryService _categoryService;
 		
 
-		public ProductManager(IProductDal productDal)
+		public ProductManager(IProductDal productDal, ICategoryService categoryService)
 		{
 			_productDal = productDal;
+			_categoryService = categoryService;
+
 			
 		}
 
@@ -32,18 +36,24 @@ namespace Business.Concrete
 		public IResult Add(Product product)
 		{
 			//aynı isimde ürün eklenemez.
+			/// Eğer kategory ile ilgili bir kural oluşturmak istersek;
+			/// eğer mevcut kategory sayısı 15 i geçti ise sisteme yeni bir ürün eklenemez.
+
 			//business codes
 
-			if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+			IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),
+				CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+				CheckIfCategoryLimitExceded() 
+				);
+
+			if (result!=null)
 			{
-				if (CheckIfProductNameExists(product.ProductName).Success)
-				{
+				return result;
+			}
+
 					_productDal.Add(product);
 					return new SuccessResult(Messages.ProductAdded);
-				}
-			
-			}
-			return new ErrorResult();
+		
 			
 			
 		}
@@ -82,12 +92,16 @@ namespace Business.Concrete
 		[ValidationAspect(typeof(ProductValidator))]
 		public IResult Update(Product product)
 		{
-			var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
-			if (result >= 15)
+			if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
 			{
-				return new ErrorResult(Messages.ProductCountOfCategoryEror);
+				if (CheckIfProductNameExists(product.ProductName).Success)
+				{
+					_productDal.Add(product);
+					return new SuccessResult(Messages.ProductAdded);
+				}
+
 			}
-			throw new NotImplementedException();
+			return new ErrorResult();
 		}
 
 		private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
@@ -110,6 +124,22 @@ namespace Business.Concrete
 			}
 			return new SuccessResult();
 
+		}
+
+
+		//Aslında bunu yazmaktaki amaç product'ın kategory servisinin nasıl yorumlanıyor onun için yazıyoruz.
+		// Eger bu kuralı kategoryManager'ı yazsaydık tek başına bir servis demekti. ama bu tamamen o kategory..
+		//.. servisini kullanan bir ürünün onu nasıl ele aldığı ile alakalıdır.
+
+		private IResult CheckIfCategoryLimitExceded()
+		{
+			var result = _categoryService.GetAll();
+			if (result.Data.Count>15)
+			{
+				return new ErrorResult(Messages.CategoryLimitExceded);
+			}
+
+			return new SuccessResult();
 		}
 
 
