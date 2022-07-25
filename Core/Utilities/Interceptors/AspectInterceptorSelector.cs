@@ -1,10 +1,11 @@
-﻿using Castle.DynamicProxy;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using Castle.DynamicProxy;
+using Core.Aspects.Autofac;
+using Core.CrossCuttingConcerns.Validation;
 namespace Core.Utilities.Interceptors
 {
 
