@@ -32,7 +32,9 @@ namespace Business.Concrete
 			
 		}
 
-		[ValidationAspect(typeof(ProductValidator))]
+		//cleim - İdda etmek,
+		//[SecuredOperation("product.add, admin")]
+		[ValidationAspect(typeof( ProductValidator))]
 		public IResult Add(Product product)
 		{
 			//aynı isimde ürün eklenemez.
