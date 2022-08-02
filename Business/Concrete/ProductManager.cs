@@ -60,7 +60,7 @@ namespace Business.Concrete
 			
 			
 		}
-		 
+		 [CacheAspect] //key, value
 		public IDataResult<List<Product>> GetALL()
 		{
 			if (DateTime.Now.Hour == 20)
@@ -71,6 +71,7 @@ namespace Business.Concrete
 
 			
 		}
+
 
 		public IDataResult<List<Product>> GetAllByCategoryId(int id)
 		{
